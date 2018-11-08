@@ -1,0 +1,83 @@
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>ArcGIS DevLabs: JavaScript Starter App</title>
+  <style>
+    html,
+    body,
+    #viewDiv {
+      padding: 0;
+      margin: 0;
+      height: 100%;
+      width: 100%;
+    }
+  </style>
+
+  <link rel="stylesheet" href="https://js.arcgis.com/4.9/esri/css/main.css">
+  <script src="https://js.arcgis.com/4.9/"></script>
+
+  <script>
+    require([
+      "esri/Map",
+      "esri/views/MapView",
+      "esri/layers/Layer",
+      "esri/core/promiseUtils", //to order layers
+      "dojo/domReady!"
+    ], function (Map, MapView, Layer, promiseUtils) {
+
+      var map = new Map({
+        basemap: "topo-vector"
+      });
+
+      var view = new MapView({
+        container: "viewDiv",
+        map: map,
+        center: [-118.71511, 34.09042],
+        zoom: 10
+      });
+
+      var trailheads = Layer.fromPortalItem({
+        portalItem: {
+          id: "2e4b3df6ba4b44969a3bc9827de746b3",
+        }
+      });
+      trailheads.then(function (layer) {
+        map.add(layer);
+      });
+
+      var trail = Layer.fromPortalItem({
+        portalItem: {
+          id: "6b8ca89d2bd2418f8b91b030f9832ab8",
+        }
+      });
+      trail.then(function (layer) {
+        map.add(layer);
+      });
+
+      var open = Layer.fromPortalItem({
+        portalItem: {
+          id: "fbca9c87feb94ba5b00411b3a00809f3"
+        }
+      });
+      open.then(function (layer) {
+        map.add(layer);
+      });
+
+      promiseUtils.eachAlways([trailheads, trail, open])
+        .then(function (promises) {
+          for (var i = 0; i < promises.length; i++) {
+            map.add(promises[i].value, 0);
+          }
+        });
+
+    });
+  </script>
+</head>
+
+<body>
+  <div id="viewDiv"></div>
+</body>
+
+</html>
