@@ -89,7 +89,23 @@
             };
             view.graphics.add(result.route);
           });
+          // Display the directions
+          var directions = document.createElement("ol");
+          directions.classList = "esri-widget esri-widget--panel esri-directions__scroller";
+          directions.style.marginTop = 0;
+          directions.style.paddingTop = "15px";
 
+          // Show the directions
+          var features = data.routeResults[0].directions.features;
+          features.forEach(function (result, i) {
+            var direction = document.createElement("li");
+            direction.innerHTML = result.attributes.text + " (" + result.attributes.length.toFixed(2) + " miles)";
+            directions.appendChild(direction);
+          });
+
+          // Add directions to the view
+          view.ui.empty("top-right");
+          view.ui.add(directions, "top-right");
         });
       }
 
